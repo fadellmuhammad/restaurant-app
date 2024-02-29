@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
 
 class DetailPage extends StatefulWidget {
@@ -37,7 +38,7 @@ class _DetailPageState extends State<DetailPage> {
           child: Column(
             children: [
               Image.network(
-                widget.restaurant.pictureId,
+                '$imageUrl${widget.restaurant.pictureId}',
                 errorBuilder: (context, error, _) => const Center(
                   child: Icon(Icons.error),
                 ),
@@ -109,90 +110,11 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.only(top: 20, left: 4),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: const Center(
-                              child: Text(
-                                'Menus',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.only(bottom: 8),
-                                      child: const Text(
-                                        'Foods',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: List<Widget>.generate(
-                                        widget.restaurant.menus.foods.length,
-                                        (int index) {
-                                          return Text(widget.restaurant.menus
-                                              .foods[index].name);
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 50,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.only(bottom: 8),
-                                      child: const Text(
-                                        'Drinks',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: List<Widget>.generate(
-                                        widget.restaurant.menus.drinks.length,
-                                        (int index) {
-                                          return Text(widget.restaurant.menus
-                                              .drinks[index].name);
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
             ],
           ),
-          // ),
-          // ],
         ),
       ),
     );
