@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
 import 'package:restaurant_app/ui/detail_page.dart';
@@ -14,6 +15,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return MaterialApp(
       title: 'Restaurant App',
       theme: ThemeData(
@@ -23,7 +26,9 @@ class MyApp extends StatelessWidget {
             ),
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: myTextTheme,
+        textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
+          bodyMedium: GoogleFonts.poppins(textStyle: textTheme.bodyMedium),
+        ),
       ),
       initialRoute: '/home_page',
       routes: {

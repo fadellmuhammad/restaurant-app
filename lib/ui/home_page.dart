@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
@@ -91,9 +93,20 @@ class _HomePageState extends State<HomePage> {
               },
             );
           } else if (snapshot.hasError) {
+                 String errorMessage;
+            if (snapshot.error is SocketException) {
+              errorMessage = 'No Internet connection';
+            } else if (snapshot.error is HttpException) {
+              errorMessage = 'Couldn\'t find the data';
+            } else if (snapshot.error is FormatException) {
+              errorMessage = 'Bad response format';
+            } else {
+              errorMessage = 'Something went wrong';
+            }
+
             return Center(
               child: Material(
-                child: Text(snapshot.error.toString()),
+                child: Text(errorMessage, textAlign: TextAlign.center),
               ),
             );
           } else {
