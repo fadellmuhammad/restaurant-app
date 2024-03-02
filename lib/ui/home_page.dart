@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
+import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/widget/card_restaurant.dart';
-
-enum ResultState { loading, nodata, hasData, error }
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -71,37 +73,38 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildList(BuildContext context) {
-    return FutureBuilder(
-      future: _restaurant,
-      builder: (context, AsyncSnapshot<RestaurantResult> snapshot) {
-        var state = snapshot.connectionState;
-        if (state != ConnectionState.done) {
+    return Consumer<RestaurantProvider>(
+      builder: (context, state, _) {
+        if (state.state == ResultState.loading) {
           return const Center(
             child: CircularProgressIndicator(),
           );
+        } else if (state.state == ResultState.hasData) {
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: state.result.restaurants.length,
+            itemBuilder: (context, index) {
+              var restaurant = state.result.restaurants[index];
+              return CardRestaurant(restaurant: restaurant);
+            },
+          );
+        } else if (state.state == ResultState.noData) {
+          return Center(
+            child: Material(
+              child: Text(state.message),
+            ),
+          );
+        } else if (state.state == ResultState.error) {
+          return Center(
+            child: Material(
+              child: Text(state.message),
+            ),
+          );
         } else {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: snapshot.data?.restaurants.length,
-              itemBuilder: (context, index) {
-                var restaurant = snapshot.data?.restaurants[index];
-                return CardRestaurant(restaurant: restaurant!);
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Material(
-                child: Text(snapshot.error.toString()),
-              ),
-            );
-          } else {
-            return const Material(child: Text(''));
-          }
+          return const Material(child: Text(''));
         }
       },
     );
   }
 }
-
