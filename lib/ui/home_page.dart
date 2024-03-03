@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
@@ -98,7 +96,7 @@ class _HomePageState extends State<HomePage> {
         } else if (state.state == ResultState.error) {
           return Center(
             child: Material(
-              child: Text(state.message),
+              child: Text(state.message, textAlign: TextAlign.center),
             ),
           );
         } else {

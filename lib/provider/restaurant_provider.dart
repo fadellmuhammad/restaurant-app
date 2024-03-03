@@ -1,8 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
 
-enum ResultState {loading, noData, hasData, error}
+enum ResultState { loading, noData, hasData, error }
 
 class RestaurantProvider extends ChangeNotifier {
   final ApiService apiService;
@@ -15,11 +16,10 @@ class RestaurantProvider extends ChangeNotifier {
   late ResultState _state;
   String _message = '';
 
-
   String get message => _message;
- 
+
   RestaurantResult get result => _restaunrantResult;
- 
+
   ResultState get state => _state;
 
   Future<dynamic> _fetchAllRestaurant() async {
@@ -37,10 +37,19 @@ class RestaurantProvider extends ChangeNotifier {
         return _restaunrantResult = restaurant;
       }
     } catch (e) {
-        _state = ResultState.error;
-        notifyListeners();
-        return _message = 'Error --> $e';
+      _state = ResultState.error;
+      notifyListeners();
+      String errorMessage;
+      if (e is SocketException) {
+        errorMessage = 'No Internet connection';
+      } else if (e is HttpException) {
+        errorMessage = 'Couldn\'t find the data';
+      } else if (e is FormatException) {
+        errorMessage = 'Bad response format';
+      } else {
+        errorMessage = 'Something went wrong';
+      }
+      return _message = errorMessage;
     }
   }
-
 }
