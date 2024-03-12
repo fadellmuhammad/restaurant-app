@@ -13,12 +13,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<RestaurantResult> _restaurant;
+  late Future<RestaurantList> _restaurant;
 
   @override
   void initState() {
     super.initState();
-    _restaurant = ApiService().restaurants();
+    _restaurant = ApiService().restaurantList();
   }
 
   @override

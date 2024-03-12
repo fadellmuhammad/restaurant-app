@@ -7,12 +7,12 @@ const String imageUrl = 'https://restaurant-api.dicoding.dev/images/medium/';
 class ApiService {
   static const String _baseUrl = 'https://restaurant-api.dicoding.dev/';
 
-  Future<RestaurantResult> restaurants() async {
+  Future<RestaurantList> restaurantList() async {
     final response = await http.get(Uri.parse('$_baseUrl/list'));
     if (response.statusCode == 200) {
-      return RestaurantResult.fromJson(json.decode(response.body));
+      return RestaurantList.fromJson(json.decode(response.body));
     } else {
-      throw Exception('failed to load restaurants');
+      throw Exception('failed to load list of restaurant');
     }
   }
 
@@ -21,7 +21,16 @@ class ApiService {
     if (response.statusCode == 200) {
       return RestaurantSearch.fromJson(json.decode(response.body));
     } else {
-      throw Exception('failed to load restaurants');
+      throw Exception('failed to search restaurant');
+    }
+  }
+
+  Future<ResponseRestaurantDetail> restaurantDetail(String id) async {
+    final response = await http.get(Uri.parse('$_baseUrl/detail/$id'));
+    if (response.statusCode == 200) {
+      return ResponseRestaurantDetail.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('failed to load restaurant detail');
     }
   }
 }
