@@ -1,42 +1,42 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
 
-enum ResultState { loading, noData, hasData, error }
+enum ResultState {loading, noData, hasData, error}
 
-class RestaurantProvider extends ChangeNotifier {
+class RestaurantDetailProvider extends ChangeNotifier {
   final ApiService apiService;
+  final String restaurantId;
 
-  RestaurantProvider({required this.apiService}) {
-    _fetchAllRestaurant();
+  RestaurantDetailProvider({required this.apiService, required this.restaurantId}) {
+    _fetchDetailRestaurant();
   }
 
-  late RestaurantList _restaunrantList;
+  late RestaurantDetail _restaunrantDetail;
   late ResultState _state;
   String _message = '';
 
   String get message => _message;
 
-  RestaurantList get result => _restaunrantList;
+  RestaurantDetail get result => _restaunrantDetail;
 
   ResultState get state => _state;
 
-  Future<dynamic> _fetchAllRestaurant() async {
+  Future<dynamic> _fetchDetailRestaurant() async {
     try {
       _state = ResultState.loading;
       notifyListeners();
-      final restaurant = await apiService.restaurantList();
-      if (restaurant.restaurants.isEmpty) {
+      final restaurantDetail = await apiService.restaurantDetail(restaurantId);
+      if (restaurantDetail.restaurant == null) {
         _state = ResultState.noData;
         notifyListeners();
         return _message = 'Empty Data';
       } else {
         _state = ResultState.hasData;
         notifyListeners();
-        return _restaunrantList = restaurant;
+        return _restaunrantDetail = restaurantDetail.restaurant;
       }
     } catch (e) {
       _state = ResultState.error;

@@ -13,7 +13,7 @@ class CardRestaurant extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, '/detail_page', arguments: restaurant);
+          Navigator.pushNamed(context, '/detail_page', arguments: restaurant.id);
         },
         child: Row(
           children: [
