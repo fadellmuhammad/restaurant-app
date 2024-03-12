@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/data/api/api_service.dart';
-import 'package:restaurant_app/data/model/restaurant.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/widget/card_restaurant.dart';
 
@@ -13,13 +11,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<RestaurantList> _restaurant;
-
-  @override
-  void initState() {
-    super.initState();
-    _restaurant = ApiService().restaurantList();
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/data/model/restaurant.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/provider/restaurant_search_provider.dart';
 import 'package:restaurant_app/widget/card_restaurant.dart';
 import 'package:restaurant_app/widget/search.dart';
 
@@ -13,12 +12,10 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  late Future<RestaurantSearch> restaurant;
   bool search = false;
 
   void resultSearch(result) {
     setState(() {
-      restaurant = result;
       search = true;
     });
   }
@@ -54,49 +51,37 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildList(BuildContext context) {
-    return FutureBuilder(
-      future: restaurant,
-      builder: (context, AsyncSnapshot<RestaurantSearch> snapshot) {
-        var state = snapshot.connectionState;
-        if (state != ConnectionState.done) {
+    return Consumer<RestaurantSearchProvider>(
+      builder: (context, state, _) {
+        if (state.state == ResultState.loading) {
           return const Center(
             child: CircularProgressIndicator(),
           );
+        } else if (state.state == ResultState.hasData) {
+          var restaurant = state.result;
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: restaurant.restaurants.length,
+            itemBuilder: (context, index) {
+              var res = restaurant.restaurants[index];
+              return CardRestaurant(restaurant: res);
+            },
+          );
+        } else if (state.state == ResultState.noData) {
+          return Center(
+            child: Material(
+              child: Text(state.message),
+            ),
+          );
+        } else if (state.state == ResultState.error) {
+          return Center(
+            child: Material(
+              child: Text(state.message, textAlign: TextAlign.center),
+            ),
+          );
         } else {
-          if (snapshot.hasData) {
-            if (snapshot.data!.restaurants.isEmpty) {
-              return const Text('data not found');
-            } else {
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: snapshot.data?.restaurants.length,
-                itemBuilder: (context, index) {
-                  var restaurant = snapshot.data?.restaurants[index];
-                  return CardRestaurant(restaurant: restaurant!);
-                },
-              );
-            }
-          } else if (snapshot.hasError) {
-            String errorMessage;
-            if (snapshot.error is SocketException) {
-              errorMessage = 'No Internet connection';
-            } else if (snapshot.error is HttpException) {
-              errorMessage = 'Couldn\'t find the data';
-            } else if (snapshot.error is FormatException) {
-              errorMessage = 'Bad response format';
-            } else {
-              errorMessage = 'Something went wrong';
-            }
-
-            return Center(
-              child: Material(
-                child: Text(errorMessage, textAlign: TextAlign.center),
-              ),
-            );
-          } else {
-            return const Material(child: Text(''));
-          }
+          return const Material(child: Text(''));
         }
       },
     );

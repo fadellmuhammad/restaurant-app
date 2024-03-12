@@ -5,6 +5,7 @@ import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/provider/restaurant_search_provider.dart';
 import 'package:restaurant_app/ui/detail_page.dart';
 import 'package:restaurant_app/ui/home_page.dart';
 import 'package:restaurant_app/ui/search_page.dart';
@@ -50,7 +51,14 @@ class MyApp extends StatelessWidget {
             child: const DetailPage(),
           );
         },
-        '/search': (context) => const SearchPage(),
+        '/search': (context) {
+          return ChangeNotifierProvider<RestaurantSearchProvider>(
+            create: (_) => RestaurantSearchProvider(
+              apiService: ApiService(),
+            ),
+            child: const SearchPage(),
+          );
+        }
       },
     );
   }
