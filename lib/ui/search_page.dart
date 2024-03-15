@@ -28,22 +28,15 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
-            // padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                // Text('Search'),
-                Container(
-                  // padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Search(resultSearch: resultSearch),
-                ),
-                search
-                    ? Container(
-                        child: _buildList(context),
-                      )
-                    : Container(),
-              ],
-            ),
+          child: Column(
+            children: [
+              Search(resultSearch: resultSearch),
+              search
+                  ? Container(
+                      child: _buildList(context),
+                    )
+                  : Container(),
+            ],
           ),
         ),
       ),
