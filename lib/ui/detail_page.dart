@@ -2,10 +2,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
+import 'package:restaurant_app/data/model/restaurant.dart';
+import 'package:restaurant_app/provider/database_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 
 class DetailPage extends StatefulWidget {
-  const DetailPage({super.key});
+  final Restaurant restaurant;
+
+  const DetailPage({super.key, required this.restaurant});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -39,11 +43,63 @@ class _DetailPageState extends State<DetailPage> {
           primary: true,
           child: Column(
             children: [
-              Image.network(
-                '$imageUrl${restaurant.pictureId}',
-                errorBuilder: (context, error, _) => const Center(
-                  child: Icon(Icons.error),
-                ),
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Image.network(
+                      '$imageUrl${restaurant.pictureId}',
+                      errorBuilder: (context, error, _) => const Center(
+                        child: Icon(Icons.error),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 50,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 2,
+                            blurRadius: 2,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Consumer<DatabaseProvider>(
+                        builder: (context, provider, child) {
+                          return FutureBuilder<bool>(
+                            future: provider.isfavorite(restaurant.id),
+                            builder: (context, snapshot) {
+                              var isfavorite = snapshot.data ?? false;
+                              return isfavorite
+                                  ? IconButton(
+                                    iconSize: 30,
+                                      icon: const Icon(Icons.favorite),
+                                      color: Colors.red,
+                                      onPressed: () => provider
+                                          .removeFavorite(widget.restaurant.id),
+                                    )
+                                  : IconButton(
+                                    iconSize: 30,
+                                      icon: const Icon(Icons.favorite_border),
+                                      color: Colors.red,
+                                      // color: Colors.red,
+                                      onPressed: () => provider
+                                          .addFavorite(widget.restaurant),
+                                    );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
               Container(
                 padding: const EdgeInsets.only(left: 30, top: 30, right: 40),
@@ -231,7 +287,8 @@ class _DetailPageState extends State<DetailPage> {
                               alignment: Alignment.topLeft,
                               child: Text(
                                 'Customer Reviews',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                             ),
                           ),
