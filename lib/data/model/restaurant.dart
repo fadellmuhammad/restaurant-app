@@ -130,7 +130,6 @@ class ResponseRestaurantDetail {
     };
 }
 
-
 class RestaurantDetail {
     String id;
     String name;
